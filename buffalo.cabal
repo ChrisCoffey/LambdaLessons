@@ -17,6 +17,8 @@ library
   hs-source-dirs:      src
   exposed-modules:     Buffalo.Types
   build-depends:       base >= 4.7 && < 5
+                     , mtl >=  2.2.1
+                     , containers
   default-language:    Haskell2010
 
 executable buffalo-exe

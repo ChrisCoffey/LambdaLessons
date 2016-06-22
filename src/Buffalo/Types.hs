@@ -8,4 +8,3 @@ data Expr = Var Name
           | Lam Name Expr
           deriving Show
 
-
