@@ -20,4 +20,32 @@ isSelfApply (Lam (Name x) (App (Var (Name y)) (Var (Name z)) ))
   | otherwise         = False
 isSelfApply _         = False
 
+apply :: Expr
+apply = Lam (Name "func") (Lam 
+                            (Name "arg") 
+                            (App (Var (Name "func")) (Var (Name "arg")))
+                          )
 
+first :: Expr
+first = Lam (Name "x") (Lam
+                         (Name "y")
+                         (Var (Name "x"))
+                       )
+second :: Expr
+second = Lam (Name "x") (Lam
+                         (Name "y")
+                         (Var (Name "y"))
+                       )
+
+makePair :: Expr
+makePair = Lam (Name "first") (Lam 
+                                (Name "second")
+                                (Lam 
+                                  (Name "func")
+                                  (App 
+                                    (App (Var (Name "func")) (Var (Name "first")))
+                                    (Var (Name "second"))
+                                  )
+                                )
+                              )
+                              

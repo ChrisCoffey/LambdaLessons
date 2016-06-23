@@ -16,6 +16,8 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Buffalo.Types
+                     , Buffalo.Interpreter.Untyped
+                     , Buffalo.Combinators
   build-depends:       base >= 4.7 && < 5
                      , mtl >=  2.2.1
                      , containers
