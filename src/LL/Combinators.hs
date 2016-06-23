@@ -1,6 +1,6 @@
-module Buffalo.Combinators where
+module LL.Combinators where
 
-import Buffalo.Types
+import LL.Types
 
 i :: Expr
 i = Lam (Name "x") $ Var (Name "x")

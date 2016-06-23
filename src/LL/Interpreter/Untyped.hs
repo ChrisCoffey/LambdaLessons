@@ -1,8 +1,8 @@
-module Buffalo.Interpreter.Untyped (
+module LL.Interpreter.Untyped (
   interpret
 ) where
 
-import Buffalo.Types
+import LL.Types
 
 import Control.Monad.State
 import Control.Monad.Writer

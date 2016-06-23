@@ -1,4 +1,4 @@
-module Buffalo.Types where
+module LL.Types where
 
 newtype Name = Name String 
   deriving Show

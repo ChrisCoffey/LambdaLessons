@@ -1,13 +1,13 @@
-name:                buffalo
+name:                lambdaLessons
 version:             0.1.0.0
-synopsis:            Initial project template from stack
+synopsis:            An interactive walk through programming language construction
 description:         Please see README.md
-homepage:            https://github.com/githubuser/buffalo#readme
+homepage:            https://github.com/ChrisCoffey/LambdaLessons#readme
 license:             BSD3
 license-file:        LICENSE
-author:              Author name here
-maintainer:          example@example.com
-copyright:           2016 Author name here
+author:              Chris Coffey
+maintainer:          cmcof273@gmail.com
+copyright:           2016 Chris Coffey
 category:            Web
 build-type:          Simple
 -- extra-source-files:
@@ -15,9 +15,9 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Buffalo.Types
-                     , Buffalo.Interpreter.Untyped
-                     , Buffalo.Combinators
+  exposed-modules:     LL.Types
+                     , LL.Interpreter.Untyped
+                     , LL.Combinators
   build-depends:       base >= 4.7 && < 5
                      , mtl >=  2.2.1
                      , containers
@@ -42,4 +42,4 @@ test-suite buffalo-test
 
 source-repository head
   type:     git
-  location: https://github.com/githubuser/buffalo
+  location: https://github.com/ChrisCoffey/lambdaLessons
