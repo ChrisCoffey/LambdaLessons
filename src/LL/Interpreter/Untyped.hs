@@ -3,16 +3,22 @@ module LL.Interpreter.Untyped (
 ) where
 
 import LL.Types
+import LL.Combinators                 (isBool, isFirst)
 
 import Control.Monad.State
+import Control.Monad.State.Lazy       (StateT, runStateT)
 import Control.Monad.Writer
 import qualified Data.Map             as M
 
 
 type Step           = (Int, Expr)
 type EvalScope      = M.Map String Value
-type Eval a         = WriterT [Step] (State EvalState) a
-newtype EvalState   = EvalState {depth :: Int } deriving Show
+type Eval           = WriterT [Step] (State EvalState)
+
+data EvalState      = EvalState {depth :: Int,
+                                 n :: Maybe Int,
+                                 b :: Maybe Bool
+                                } deriving Show
 
 data Value = VInt Integer
            | VBool Bool
@@ -22,9 +28,10 @@ data Value = VInt Integer
 emptyScope :: EvalScope
 emptyScope = M.empty
 
+
 --TODO change this to an either & capture common error cases
 interpret :: Expr -> (Value, [Step])
-interpret exp = evalState (runWriterT (runInterpret emptyScope exp)) (EvalState 0)
+interpret exp = evalState (runWriterT (runInterpret emptyScope exp)) (EvalState 0 Nothing Nothing)
 
 nextKey :: String -> EvalScope -> String
 nextKey key scope = 
@@ -56,6 +63,17 @@ pushToOutput exp = do
   tell [(d, exp)]
   return ()
 
+updateLiterals :: Expr -> Eval a -> Eval a
+updateLiterals expr m 
+  | isBool expr = do 
+                modify $ \s -> s { n = n s, b = Just $ isFirst expr }
+                out <- m
+                m
+  | otherwise   = do 
+                modify $ \s -> s { n = n s, b = Nothing }
+                out <- m
+                m
+
 runInterpret :: EvalScope -> Expr -> Eval Value
 runInterpret scope expr =
   case expr of
@@ -79,4 +97,4 @@ apply (VFunc name body scope) expr =
 extendScope :: String -> Value -> EvalScope -> EvalScope
 extendScope name value = 
   M.insert name value . alphaConversion (Name name) 
-      
+
