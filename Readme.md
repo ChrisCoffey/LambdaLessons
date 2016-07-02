@@ -6,3 +6,6 @@ Step 1: The lambda calculus:
           | (<exp> <exp>)
           | (λ (<var>) <exp>)
   
+
+
+[![Join the chat at https://gitter.im/ChrisCoffey/LambdaLessons](https://badges.gitter.im/ChrisCoffey/LambdaLessons.svg)](https://gitter.im/ChrisCoffey/LambdaLessons?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
