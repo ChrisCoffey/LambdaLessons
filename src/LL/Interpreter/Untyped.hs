@@ -15,6 +15,7 @@ type Step           = (Int, Expr)
 type EvalScope      = M.Map String Value
 type Eval           = WriterT [Step] (State EvalState)
 
+--note this is likely overkill. I should only need to change the output result.
 data EvalState      = EvalState {depth :: Int,
                                  n :: Maybe Int,
                                  b :: Maybe Bool
