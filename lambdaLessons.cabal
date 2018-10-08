@@ -20,6 +20,7 @@ library
                      , LL.Combinators
                      , Interps.Language
                      , Interps.Evaluators
+                     , Interps.DSer.Lang
   build-depends:       base >= 4.7 && < 5
                      , mtl
                      , containers
