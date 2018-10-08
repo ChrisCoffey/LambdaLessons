@@ -18,10 +18,14 @@ library
   exposed-modules:     LL.Types
                      , LL.Interpreter.Untyped
                      , LL.Combinators
+                     , Interps.Language
+                     , Interps.Evaluators
   build-depends:       base >= 4.7 && < 5
                      , mtl
                      , containers
                      , array
+                     , text
+  default-extensions: OverloadedStrings
   default-language:    Haskell2010
 
 executable lambdaLessons-exe
