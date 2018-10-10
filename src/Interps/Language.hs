@@ -67,3 +67,7 @@ term1FM = add (lit 7) (neg (mul (lit 1) (lit 2)))
 
 term2FM :: (ArithLang repr, MulLang repr) => repr
 term2FM = mul (lit 7) term1f
+
+-- | The initial and final encodings are isomporphic iff you don't care about extensibility. Its possible
+-- to define interpreters for each encoding that produce the other. these functions are glorified identity
+-- functions, doing nothing but translating data-types into final encodings and final encodings into datatypes
