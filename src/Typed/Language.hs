@@ -94,3 +94,59 @@ class LambdaSemantics rep where
     app :: rep env (a -> b) -> rep env a -> rep env b
     lam :: rep (a,env) b -> rep env (a -> b)
 
+td1 :: LambdaSemantics rep => rep env Int
+td1 =  add (int 1) (int 4)
+-- td2Open is an open term, meaning that it has too many free variables, and therefore may not be interpreted from
+-- an empty environment
+td2Open :: LambdaSemantics rep => rep (Int,env) (Int -> Int)
+td2Open = lam (add z (s z))
+td3 :: LambdaSemantics rep => rep env ((Int -> Int) -> Int)
+td3 = lam (add (app z (int 1)) (int 2))
+
+-- | This type is pretty mind-bending, but essentialy wraps a 'Reader'. Given some environment type
+-- 'env', then it is guaranteed to produce the result type 'a'. The type for 'runReader' is: 'Reader r a -> r -> a'
+-- So, if we partially apply the 'Reader r a' to 'runReader' we're left with the same signature as 'unR',
+-- 'r -> a'.
+--
+-- Therefore, we can embed partially applied 'runReader' calls into this type (at least the moral equivalent of
+-- a 'runReader'). This works to prove that the embedding of the object language into Haskell is valid. After
+-- all, if it were invalid then the typechecker would reject an attempt to construct the 'R'.
+newtype R env a = R {unR :: env -> a}
+
+-- | The actual embedding of our simply typed lambda calculus into Haskell. As mentioned above in the comment on
+-- 'R', the right hand side serves as a proof that the type "soundness" of our lambda calculus can be reduced to
+-- normal type "soundness" in Haskell (which we have confidence in).
+--
+-- Therefore, if we can produce a well-typed instance of 'LambdaSemantics' then we can have confidence that the
+-- lambda calculus itself is well-typed.
+instance LambdaSemantics R where
+    int n = R $ const n
+    add l r = R $ \env -> (unR l env) + (unR r env)
+
+    z = R $ \(a,_) -> a
+    s env = R $ \(_,rest) -> unR env rest
+
+    app l r = R $ \env -> (unR l env) (unR r env)
+    lam f = R $ \env -> \x -> unR f (x,env)
+
+evalS :: R () a -> a
+evalS e = unR e ()
+
+-- | An alternative that produces 'String' representation of lambda terms. This looks identical to 'R' except that
+-- the result type has been fixed to 'String'.
+newtype S env a = S {unS :: Int -> String}
+
+instance LambdaSemantics S where
+    int n = S . const $ show n
+    add l r = S $ \env -> "("<>unS l env <> " + " <>unS r env<>")"
+
+    z = S $ \env -> "x"<> show (env - 1) -- Print the nth variable
+    s v = S $ \env -> unS v (env - 1) -- search for the nth variable
+
+    app l r = S $ \env -> "("<>unS l env <>" "<>unS r env<>")"
+    lam f = S $ \n ->
+        let x = "x"<>show n -- Introducing x-sub n, or the nth variable into the expression
+        in "(\\"<>x<>" -> "<> unS f (n+1)<> ")" -- wrap the underlying function in a new variable, then increment the var counter
+
+viewS :: S env a -> String
+viewS e = unS e 0
