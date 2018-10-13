@@ -64,7 +64,12 @@ class BoolSyn repr where
 -- recursion to fully evaluate a value, which converts it to call-by-value.
 --
 -- TODO look into some worked examples of how the 'fix' combinator actually works.
--- Turns out that this is the Y combinator
+-- Turns out that this is the Y combinator.
+--
+-- The 'Y' combinator works by taking a function with a fixed point and applying it to itself along with a copy.
+-- This copy serves the same role that our earlier copy of an expression did (allows the computation to continue).
+-- By perpetually copying+applying until the fixed-point is reached, we're able to implement recursion without ever
+-- explicitly mentioning the function name in its own body. Pretty cool!
 class FixSyn repr where
     fix :: (repr a -> repr a) -> repr a
 
@@ -102,3 +107,13 @@ idO = id
 
 testTerm :: (PCFSemantics repr, FixSyn repr) => repr Int
 testTerm = lam (\x -> (int 5)) `app` (fix idO)
+
+-- | A tagless initial encoding of the same lambda calculus is bijective to the tagless final encoding. We know this is true because we can
+-- write an interpreter that translates the final version into 'IR', or from 'IR' into the final version with no loss of information.
+data IR env a where
+    INT :: Int -> IR env Int
+    Add :: IR env Int -> IR env Int -> IR env Int
+
+    Var :: env a -> IR env a
+    Lam :: (IR env t -> IR env s) -> IR env (t -> s)
+    App :: IR env (t -> s) -> IR env t -> IR env s
